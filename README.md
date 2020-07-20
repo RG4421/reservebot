@@ -57,6 +57,42 @@ In Slack...
         - `usergroups:read`
         - `users:read`
 
+### Helm
+The helm installation assumes it will be running on an EKS cluster with an ALB configured.
+
+```
+# to install
+
+$ helm install reservebot-release chart --namespace reservebot --set slackToken=<YOUR_SLACK_TOKEN> --set slackVerificationToken=<SLACK_VERIFICATION_TOKEN>
+
+# to upgrade (update)
+
+$ helm upgrade reservebot-release chart --namespace reservebot
+
+# to upgrade the token values
+
+$ helm upgrade reservebot-release chart --namespace reservebot --set slackToken=<YOUR_SLACK_TOKEN> --set slackVerificationToken=<SLACK_VERIFICATION_TOKEN>
+
+# to find the url of the running service
+kubectl -n reservebot get ingresses
+
+# output
+NAME                 HOSTS   ADDRESS                                                                  PORTS   AGE
+reservebot-release   *       2b2b5c59-reservebot-reserv-6661-1516092071.us-east-1.elb.amazonaws.com   80      14m
+```
+
+#### Deploy steps:
+
+1. Update version in `chart/Chart.yaml`
+1. Build Docker image
+1. Push image to Docker hu`chart/Chart.yaml`
+1. Push update to Helm
+
+```
+$ docker build -t ameliagapin/reservebot:2.0.0 .
+$ docker push ameliagapin/reservebot:2.0.0
+$ helm upgrade reservebot-release chart --namespace reservebot
+```
 
 # Usage
 
